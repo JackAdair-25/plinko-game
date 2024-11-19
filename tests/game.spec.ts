@@ -18,12 +18,12 @@ test.describe('Balance', () => {
 
   test('can load balance from local storage', async ({ page, context }) => {
     await context.addInitScript(() => {
-      window.localStorage.setItem('plinko_balance', '1234');
+      window.localStorage.setItem('plinko_balance', '123400');
     });
 
     await page.goto('/');
 
-    await expect(page.getByText('1,234.00')).toBeVisible();
+    await expect(page.getByText('123,400.00')).toBeVisible();
   });
 
   test('can handle improper local storage value', async ({ page, context }) => {
@@ -98,22 +98,22 @@ test.describe('Auto Betting', () => {
     await expect(numberOfBetsInput).toHaveValue('0');
 
     // Start autobet
-    await page.getByRole('button', { name: 'Start Autobet' }).click();
-    await expect(page.getByRole('button', { name: 'Stop Autobet' })).toBeVisible();
+    await page.getByRole('button', { name: 'do it' }).click();
+    await expect(page.getByRole('button', { name: 'stop doing it' })).toBeVisible();
 
     // During autobet, all inputs are disabled
     ['Bet Amount', 'Risk', 'Rows', 'Number of Bets'].forEach(async (label) => {
       await expect(page.getByLabel(label)).toBeDisabled();
     });
-    await expect(page.getByRole('button', { name: 'Manual' })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Auto', exact: true })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'on yo own' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'do it auto', exact: true })).toBeDisabled();
 
     // Balance gets deducted automatically
     await page.waitForTimeout(1000);
     await expect(page.getByText(/19\d\.00/)).toBeVisible();
 
     // Stop autobet manually
-    await page.getByRole('button', { name: 'Stop Autobet' }).click();
+    await page.getByRole('button', { name: 'stop doing it' }).click();
     await expect(page.getByLabel('Bet Amount')).toBeEnabled();
     await expect(page.getByLabel('Number of Bets')).toBeEnabled();
     await expect(page.getByRole('button', { name: 'Manual' })).toBeEnabled();
